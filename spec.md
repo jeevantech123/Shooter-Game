@@ -24,7 +24,7 @@ A very simple 2D space shooter that runs in a browser. It meets the requirements
 
 ```
 
-python3 -m http.server 8000
+py -m http.server 8000
 
 ```
 
@@ -64,7 +64,7 @@ Then open http://localhost:8000 in a browser.
 
 
 
-\- A game loop using. It updates positions, checks collisions, then redraws.
+\- A game loop using requestAnimationFrame. It updates positions, checks collisions, then redraws.
 
 \- Collisions are simple rectangle overlap checks.
 

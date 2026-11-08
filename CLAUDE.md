@@ -30,7 +30,7 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 \- Use plain HTML, CSS, and JavaScript with a `<canvas>`.
 
-\- The game must run with one command: `python3 -m http.server 8000`, then open http://localhost:8000.
+\- The game must run with one command: `py -m http.server 8000`, then open http://localhost:8000.
 
 \- No API keys, no login, no paid services, no network calls to other sites.
 
