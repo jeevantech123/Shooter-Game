@@ -124,12 +124,13 @@ test("R1: updateHighScore only goes up, and saves each new high score", () => {
 
 test("R1/R8: restarting with Enter resets the score but keeps the High Score", () => {
   const page = shootFor(loadGameInFakePage({ storage: createFakeStorage(), random: CENTER }), 2);
-  page.frame();
-  const best = page.highScoreText();
-  assert.ok(Number(best) >= 10);
-
   page.runFor(20); // no more shooting: enemies hit the ship until Game Over
   assert.ok(page.fake.texts().includes("Game Over"));
+  // Read it at Game Over: shots still in flight after Space was released can score too.
+  const best = page.highScoreText();
+  assert.ok(Number(best) >= 10);
+  assert.equal(best, String(hudScore(page)), "high score equals this game's final score");
+
   page.press("Enter");
   page.frame();
   assert.ok(page.fake.texts().includes("Score: 0   Lives: 3"), "new game started");
