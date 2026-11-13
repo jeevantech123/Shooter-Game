@@ -7,6 +7,7 @@ A very simple 2D space shooter that runs in your browser. It needs no download, 
 - A new enemy appears at the top about once a second and moves down. Shooting one is worth **10 points**.
 - You start with **3 lives**. You lose one when an enemy hits your ship or reaches the bottom.
 - At 0 lives the game shows **Game Over** and your final score. Press **Enter** to play again.
+- The **High Score** panel to the right of the game shows your best score ever. It goes up as soon as you beat it. It is saved in this browser only (local storage), so it is still there after you restart or reload the page. Nothing is sent anywhere.
 
 Everything is drawn with canvas shapes using plain HTML, CSS, and JavaScript (`index.html`, `style.css`, `game.js`).
 
@@ -28,4 +29,4 @@ From the project folder (needs Node.js 18 or newer; nothing to install):
 node --test
 ```
 
-This runs every `tests/*.test.js` file with Node's built-in test runner. There is one test file per change to the project. `tests/01-initial-build.test.js` covers the first build, and `tests/02-round2-move-up-down.test.js` covers Round 2 (R1: up and down movement).
+This runs every `tests/*.test.js` file with Node's built-in test runner. There is one test file per change to the project. `tests/01-initial-build.test.js` covers the first build, `tests/02-round2-move-up-down.test.js` covers Round 2 (R1: up and down movement), and `tests/03-round3-high-score.test.js` covers Round 3 (R1: the High Score panel).
