@@ -26,6 +26,8 @@ const STARTING_LIVES = 3;
 
 const MAX_FRAME_TIME = 0.1; // cap on one frame's step, e.g. after a tab switch
 
+const HIGH_SCORE_KEY = "shooter-game-high-score"; // localStorage key
+
 const COLORS = {
   background: "#000010",
   ship: "#4fd1ff",
@@ -183,6 +185,41 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+// ---- High score ------------------------------------------------------------
+// Kept apart from the game state so that restarting (resetGame) never clears it.
+// `storage` is localStorage, or null when the browser does not allow it.
+
+function createHighScore(storage) {
+  return { best: loadHighScore(storage), storage };
+}
+
+// Raise the high score as soon as the score passes it, and save it.
+// Returns true when it changed.
+function updateHighScore(highScore, score) {
+  if (score <= highScore.best) return false;
+  highScore.best = score;
+  saveHighScore(highScore.storage, score);
+  return true;
+}
+
+// A missing, broken, or negative saved value counts as no high score (0).
+function loadHighScore(storage) {
+  try {
+    const saved = Number(storage.getItem(HIGH_SCORE_KEY));
+    return Number.isFinite(saved) && saved > 0 ? Math.floor(saved) : 0;
+  } catch {
+    return 0; // no storage, or reading it is blocked
+  }
+}
+
+function saveHighScore(storage, value) {
+  try {
+    storage.setItem(HIGH_SCORE_KEY, String(value));
+  } catch {
+    // No storage or writing is blocked: the high score lasts until the page closes.
+  }
+}
+
 // ---- Keyboard --------------------------------------------------------------
 
 const LEFT_KEYS = ["ArrowLeft", "KeyA"];
@@ -271,11 +308,23 @@ function drawGameOver(ctx, state) {
 
 // ---- Browser start-up ------------------------------------------------------
 
+// Reading window.localStorage itself can throw when site data is blocked.
+function browserStorage() {
+  try {
+    return window.localStorage || null;
+  } catch {
+    return null;
+  }
+}
+
 function startGame() {
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
+  const highScoreElement = document.getElementById("high-score");
   const state = createGame();
   const input = createInput();
+  const highScore = createHighScore(browserStorage());
+  highScoreElement.textContent = String(highScore.best);
 
   window.addEventListener("keydown", (event) => {
     if (handleKeyDown(state, input, event.code)) event.preventDefault();
@@ -290,6 +339,7 @@ function startGame() {
     const dt = lastTime === null ? 0 : Math.min((now - lastTime) / 1000, MAX_FRAME_TIME);
     lastTime = now;
     updateGame(state, input, dt);
+    if (updateHighScore(highScore, state.score)) highScoreElement.textContent = String(highScore.best);
     drawGame(ctx, state);
     requestAnimationFrame(frame);
   }
@@ -303,8 +353,9 @@ if (typeof module !== "undefined") {
   module.exports = {
     CANVAS_WIDTH, CANVAS_HEIGHT, SHIP_WIDTH, SHIP_HEIGHT, SHIP_BOTTOM_MARGIN, SHIP_SPEED,
     SHOT_WIDTH, SHOT_HEIGHT, SHOT_SPEED, SHOT_DELAY, ENEMY_SIZE, ENEMY_SPEED,
-    ENEMY_SPAWN_DELAY, POINTS_PER_ENEMY, STARTING_LIVES, MAX_FRAME_TIME,
+    ENEMY_SPAWN_DELAY, POINTS_PER_ENEMY, STARTING_LIVES, MAX_FRAME_TIME, HIGH_SCORE_KEY,
     createGame, resetGame, createInput, updateGame, rectsOverlap,
     handleKeyDown, handleKeyUp, drawGame, hudText,
+    createHighScore, updateHighScore, loadHighScore, saveHighScore,
   };
 }
