@@ -40,24 +40,42 @@ function createFakeContext() {
   };
 }
 
+// A stand-in for the browser's localStorage. Like the real one, it stores
+// strings and returns null for a missing key.
+function createFakeStorage(initial = {}) {
+  const items = new Map(Object.entries(initial).map(([key, value]) => [key, String(value)]));
+  return {
+    items,
+    getItem: (key) => (items.has(key) ? items.get(key) : null),
+    setItem: (key, value) => void items.set(key, String(value)),
+  };
+}
+
 // Load game.js the way a browser would (as a plain script with a document and
 // window), using fakes for the canvas, keyboard events and animation frames.
-function loadGameInFakePage() {
+// Options:
+//   storage - put on window.localStorage (left out: the page has no localStorage)
+//   random  - replaces Math.random inside the page, to place enemies
+function loadGameInFakePage({ storage, random } = {}) {
   const fake = createFakeContext();
   const listeners = { keydown: [], keyup: [] };
   let nextFrame = null;
   const canvas = { width: 480, height: 640, getContext: () => fake.ctx };
+  const highScoreElement = { textContent: "" };
+  const elements = { game: canvas, "high-score": highScoreElement };
 
   const sandbox = {
-    document: { getElementById: (id) => (id === "game" ? canvas : null) },
+    document: { getElementById: (id) => elements[id] || null },
     addEventListener: (type, fn) => (listeners[type] ||= []).push(fn),
     requestAnimationFrame: (fn) => {
       nextFrame = fn;
       return 1;
     },
   };
+  if (storage !== undefined) sandbox.localStorage = storage;
   sandbox.window = sandbox;
   vm.createContext(sandbox);
+  if (random) vm.runInContext("Math", sandbox).random = random;
   vm.runInContext(fs.readFileSync(GAME_PATH, "utf8"), sandbox, { filename: "game.js" });
 
   let now = 0;
@@ -70,6 +88,7 @@ function loadGameInFakePage() {
   return {
     fake,
     listeners,
+    highScoreText: () => highScoreElement.textContent,
     hasPendingFrame: () => nextFrame !== null,
     press: (code) => sendKey("keydown", code),
     release: (code) => sendKey("keyup", code),
@@ -89,4 +108,4 @@ function loadGameInFakePage() {
   };
 }
 
-module.exports = { ROOT, readProjectFile, step, createFakeContext, loadGameInFakePage };
+module.exports = { ROOT, readProjectFile, step, createFakeContext, createFakeStorage, loadGameInFakePage };
