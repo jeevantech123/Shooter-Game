@@ -38,9 +38,11 @@ Then open http://localhost:8000 in a browser.
 
 
 
-\- The canvas is 480 by 640 pixels. The player's ship sits near the bottom.
+\- The canvas is 480 by 640 pixels. The player's ship starts near the bottom, centered.
 
-\- Left and right arrow keys (or A and D) move the ship sideways. It cannot leave the canvas.
+\- Left and right arrow keys (or A and D) move the ship sideways. Up and down arrow keys (or W and S) move the ship up and down. The ship can move anywhere on the canvas but cannot leave it.
+
+\- Up/down movement uses the same logic and speed as left/right movement. Each direction is handled on its own, so holding a horizontal and a vertical key at once moves the ship diagonally (each direction at full speed). Holding opposite keys (such as Up and Down) cancels out.
 
 \- Space fires a shot that travels upward. There is a short delay between shots so the player cannot fire continuously.
 
@@ -54,7 +56,7 @@ Then open http://localhost:8000 in a browser.
 
 \- When lives reach 0, the game stops and shows "Game Over" with the final score.
 
-\- Pressing Enter on the game-over screen resets the score and lives and starts again, without reloading the page. 
+\- Pressing Enter on the game-over screen resets the score and lives, puts the ship back at its starting position, and starts again, without reloading the page. 
 
 \- No login or account is needed. 
 
