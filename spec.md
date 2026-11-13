@@ -58,6 +58,12 @@ Then open http://localhost:8000 in a browser.
 
 \- Pressing Enter on the game-over screen resets the score and lives, puts the ship back at its starting position, and starts again, without reloading the page. 
 
+\- A High Score panel sits to the right of the canvas, outside it. It shows the label "High Score" and the highest score ever recorded in this browser. It shows 0 when no score has been recorded yet. On a screen too narrow for both, the panel may wrap below the canvas.
+
+\- The high score updates live: as soon as the current score is higher than the high score, the panel shows the new score and it is saved. A lower score never lowers it.
+
+\- The high score is saved in the browser's local storage, so it is kept when the game restarts and when the page is reloaded or the browser is closed. Restarting with Enter does not reset it. If local storage is not available, the game still works and keeps the high score until the page is closed.
+
 \- No login or account is needed. 
 
 
@@ -71,6 +77,8 @@ Then open http://localhost:8000 in a browser.
 \- Collisions are simple rectangle overlap checks.
 
 \- Game state (ship, shots, enemies, score, lives) is kept in plain JavaScript variables.
+
+\- The high score is kept apart from the game state, so restarting does not clear it. It is stored under one local storage key in this browser only; nothing is sent over the network.
 
 
 
