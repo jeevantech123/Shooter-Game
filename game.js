@@ -64,7 +64,7 @@ function resetGame(state) {
 }
 
 function createInput() {
-  return { left: false, right: false, fire: false };
+  return { left: false, right: false, up: false, down: false, fire: false };
 }
 
 // ---- Update ----------------------------------------------------------------
@@ -82,12 +82,18 @@ function updateGame(state, input, dt, random = Math.random) {
   if (state.lives <= 0) state.isOver = true;
 }
 
+// Each axis moves on its own at SHIP_SPEED, so diagonals are not slowed down.
 function moveShip(state, input, dt) {
-  let direction = 0;
-  if (input.left) direction -= 1;
-  if (input.right) direction += 1;
   const ship = state.ship;
-  ship.x = clamp(ship.x + direction * SHIP_SPEED * dt, 0, CANVAS_WIDTH - ship.width);
+  const dx = axisDirection(input.left, input.right);
+  const dy = axisDirection(input.up, input.down);
+  ship.x = clamp(ship.x + dx * SHIP_SPEED * dt, 0, CANVAS_WIDTH - ship.width);
+  ship.y = clamp(ship.y + dy * SHIP_SPEED * dt, 0, CANVAS_HEIGHT - ship.height);
+}
+
+// -1, 0, or 1 along one axis; holding both keys cancels out.
+function axisDirection(negative, positive) {
+  return (positive ? 1 : 0) - (negative ? 1 : 0);
 }
 
 function updateFiring(state, input, dt) {
@@ -181,6 +187,8 @@ function clamp(value, min, max) {
 
 const LEFT_KEYS = ["ArrowLeft", "KeyA"];
 const RIGHT_KEYS = ["ArrowRight", "KeyD"];
+const UP_KEYS = ["ArrowUp", "KeyW"];
+const DOWN_KEYS = ["ArrowDown", "KeyS"];
 const FIRE_KEYS = ["Space"];
 const RESTART_KEYS = ["Enter", "NumpadEnter"];
 
@@ -200,6 +208,8 @@ function handleKeyUp(input, code) {
 function setKey(input, code, isDown) {
   if (LEFT_KEYS.includes(code)) input.left = isDown;
   else if (RIGHT_KEYS.includes(code)) input.right = isDown;
+  else if (UP_KEYS.includes(code)) input.up = isDown;
+  else if (DOWN_KEYS.includes(code)) input.down = isDown;
   else if (FIRE_KEYS.includes(code)) input.fire = isDown;
   else return false;
   return true;
