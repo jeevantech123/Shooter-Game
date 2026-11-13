@@ -54,6 +54,8 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 \- Any new game-state field must be created in `createGame()`, so `resetGame()` resets it.
 
+\- Data that must outlive one game (such as the high score) is kept outside the game state, not in `createGame()`, so restarting does not clear it.
+
 
 
 \## Tests
@@ -84,7 +86,9 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 \- Make a commit after every major change. After building initial project, commit. If asked to make a major change to a project, do that then commit.
 
-\- After each change, play the game in the browser and check the requirements it touches.
+\- After each change, the game must be play-checked in the browser for the requirements it touches. Claude does not drive a browser (decision D13): run `node --test` and the server smoke check, then give me a short manual play-check list, and I play it.
+
+\- `problem.md`, `spec.md`, and `CLAUDE.md` use escaped Markdown (`\#`, `\-`) with blank lines between items. Keep that style when editing `spec.md` or `CLAUDE.md`.
 
 \- Never undo or amend a commit. Commit in small steps with messages that say what changed and why.
 

@@ -34,7 +34,13 @@ People who are taking a short break from work or studying may want a quick game 
 
 
 
-\- R1 The player controls a space ship that moves left, right, up, and down. This uses the same logic as the previous code, but with up and down added onto it.
+\- R1. The player controls a space ship that moves left, right, up, and down. This uses the same logic as the previous code, but with up and down added onto it.
 
 
+
+\# Round 3 Requirements
+
+
+
+\- R1. There is a High Score snippet to the right of the canvas, showing the top high score ever recorded
 
