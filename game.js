@@ -40,6 +40,7 @@ const COLORS = {
   enemy: "#ff4f6a",
   triangle: "#b44fff",
   text: "#ffffff",
+  dim: "rgba(0, 0, 0, 0.6)", // laid over the game when paused or over
 };
 
 // ---- Game state ------------------------------------------------------------
@@ -61,6 +62,7 @@ function createGame() {
     score: 0,
     lives: STARTING_LIVES,
     isOver: false,
+    isPaused: false, // Esc pauses and un-pauses during play
     shotTimer: 0, // time left until the ship may fire again
     spawnTimer: 0, // time since the last enemy appeared
   };
@@ -78,8 +80,9 @@ function createInput() {
 // ---- Update ----------------------------------------------------------------
 
 // Advance the game by dt seconds. `random` returns a number in [0, 1).
+// Nothing changes while the game is over or paused, so no game time passes.
 function updateGame(state, input, dt, random = Math.random) {
-  if (state.isOver) return;
+  if (state.isOver || state.isPaused) return;
   moveShip(state, input, dt);
   updateFiring(state, input, dt);
   moveShots(state, dt);
@@ -262,14 +265,27 @@ const UP_KEYS = ["ArrowUp", "KeyW"];
 const DOWN_KEYS = ["ArrowDown", "KeyS"];
 const FIRE_KEYS = ["Space"];
 const RESTART_KEYS = ["Enter", "NumpadEnter"];
+const PAUSE_KEYS = ["Escape"];
 
 // Returns true when the key belongs to the game (so the page should not scroll).
-function handleKeyDown(state, input, code) {
+// `repeat` is true for the extra keydowns a browser sends while a key is held.
+// Move and fire keys are still tracked while paused, so a key let go during
+// the pause is not stuck down afterwards.
+function handleKeyDown(state, input, code, repeat = false) {
   if (RESTART_KEYS.includes(code)) {
     if (state.isOver) resetGame(state);
     return true;
   }
+  if (PAUSE_KEYS.includes(code)) {
+    if (!repeat) togglePause(state);
+    return true;
+  }
   return setKey(input, code, true);
+}
+
+// Esc pauses or un-pauses during play; it does nothing on the game-over screen.
+function togglePause(state) {
+  if (!state.isOver) state.isPaused = !state.isPaused;
 }
 
 function handleKeyUp(input, code) {
@@ -294,7 +310,8 @@ function drawGame(ctx, state) {
   drawShip(ctx, state.ship);
   for (const shot of state.shots) drawRect(ctx, shot, COLORS.shot);
   for (const enemy of state.enemies) drawEnemy(ctx, enemy);
-  drawHud(ctx, state);
+  if (state.isPaused) drawPaused(ctx);
+  drawHud(ctx, state); // after the pause dimming, so score and lives stay readable
   if (state.isOver) drawGameOver(ctx, state);
 }
 
@@ -343,9 +360,25 @@ function hudText(state) {
   return `Score: ${state.score}   Lives: ${state.lives}`;
 }
 
-function drawGameOver(ctx, state) {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+// Dim the frozen game and say how to resume.
+function drawPaused(ctx) {
+  dimCanvas(ctx);
+  ctx.fillStyle = COLORS.text;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "40px monospace";
+  ctx.fillText("Paused", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+  ctx.font = "16px monospace";
+  ctx.fillText("Press Esc to resume", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 25);
+}
+
+function dimCanvas(ctx) {
+  ctx.fillStyle = COLORS.dim;
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+}
+
+function drawGameOver(ctx, state) {
+  dimCanvas(ctx);
   ctx.fillStyle = COLORS.text;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -378,7 +411,7 @@ function startGame() {
   highScoreElement.textContent = String(highScore.best);
 
   window.addEventListener("keydown", (event) => {
-    if (handleKeyDown(state, input, event.code)) event.preventDefault();
+    if (handleKeyDown(state, input, event.code, event.repeat)) event.preventDefault();
   });
   window.addEventListener("keyup", (event) => {
     if (handleKeyUp(input, event.code)) event.preventDefault();
