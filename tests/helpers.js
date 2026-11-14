@@ -79,8 +79,9 @@ function loadGameInFakePage({ storage, random } = {}) {
   vm.runInContext(fs.readFileSync(GAME_PATH, "utf8"), sandbox, { filename: "game.js" });
 
   let now = 0;
-  function sendKey(type, code) {
-    const event = { code, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
+  // `extra` adds event fields, such as { repeat: true } for a key held down.
+  function sendKey(type, code, extra = {}) {
+    const event = { code, repeat: false, ...extra, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
     for (const fn of listeners[type]) fn(event);
     return event;
   }
@@ -90,7 +91,7 @@ function loadGameInFakePage({ storage, random } = {}) {
     listeners,
     highScoreText: () => highScoreElement.textContent,
     hasPendingFrame: () => nextFrame !== null,
-    press: (code) => sendKey("keydown", code),
+    press: (code, extra) => sendKey("keydown", code, extra),
     release: (code) => sendKey("keyup", code),
     // Run one animation frame `ms` milliseconds after the previous one.
     // Only the latest frame's draw calls are kept in fake.calls.
