@@ -74,9 +74,9 @@ Then open http://localhost:8000 in a browser.
 
 \- A game loop using requestAnimationFrame. It updates positions, checks collisions, then redraws.
 
-\- Collisions are simple rectangle overlap checks.
+\- Collisions are simple rectangle overlap checks. The ship and the purple triangle are drawn as triangles, but each is hit-tested with its rectangle.
 
-\- Game state (ship, shots, enemies, score, lives) is kept in plain JavaScript variables.
+\- Game state (ship, shots, enemies, score, lives) is kept in plain JavaScript variables. Each enemy records its kind (square or triangle), and a triangle also records its sideways direction.
 
 \- The high score is kept apart from the game state, so restarting does not clear it. It is stored under one local storage key in this browser only; nothing is sent over the network.
 
