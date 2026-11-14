@@ -21,6 +21,11 @@ const ENEMY_SIZE = 30;
 const ENEMY_SPEED = 100; // pixels per second, downward
 const ENEMY_SPAWN_DELAY = 1.0; // seconds between new enemies
 
+// Purple triangle enemy (Round 4): falls slower and bounces left and right.
+const TRIANGLE_CHANCE = 0.25; // share of new enemies that are triangles
+const TRIANGLE_FALL_SPEED = ENEMY_SPEED / 2; // pixels per second, downward
+const TRIANGLE_SIDE_SPEED = 80; // pixels per second, sideways
+
 const POINTS_PER_ENEMY = 10;
 const STARTING_LIVES = 3;
 
@@ -33,6 +38,7 @@ const COLORS = {
   ship: "#4fd1ff",
   shot: "#ffe14f",
   enemy: "#ff4f6a",
+  triangle: "#b44fff",
   text: "#ffffff",
 };
 
@@ -130,17 +136,45 @@ function updateSpawning(state, dt, random) {
 }
 
 // An enemy starts just above the top edge at a random x, then slides in.
+// random() is used for x, then the kind, then a triangle's starting direction.
 function createEnemy(random) {
-  return {
+  const enemy = {
+    type: "square",
     x: random() * (CANVAS_WIDTH - ENEMY_SIZE),
     y: -ENEMY_SIZE,
     width: ENEMY_SIZE,
     height: ENEMY_SIZE,
   };
+  if (random() < TRIANGLE_CHANCE) {
+    enemy.type = "triangle";
+    enemy.direction = random() < 0.5 ? -1 : 1; // -1 left, 1 right
+  }
+  return enemy;
+}
+
+function isTriangle(enemy) {
+  return enemy.type === "triangle";
 }
 
 function moveEnemies(state, dt) {
-  for (const enemy of state.enemies) enemy.y += ENEMY_SPEED * dt;
+  for (const enemy of state.enemies) {
+    if (isTriangle(enemy)) moveTriangle(enemy, dt);
+    else enemy.y += ENEMY_SPEED * dt;
+  }
+}
+
+// A triangle falls slowly and moves sideways, turning around at either edge.
+function moveTriangle(enemy, dt) {
+  const maxX = CANVAS_WIDTH - enemy.width;
+  enemy.y += TRIANGLE_FALL_SPEED * dt;
+  enemy.x += enemy.direction * TRIANGLE_SIDE_SPEED * dt;
+  if (enemy.x <= 0) {
+    enemy.x = 0;
+    enemy.direction = 1;
+  } else if (enemy.x >= maxX) {
+    enemy.x = maxX;
+    enemy.direction = -1;
+  }
 }
 
 // Each shot destroys at most one enemy; both disappear and the score goes up.
@@ -259,7 +293,7 @@ function drawGame(ctx, state) {
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawShip(ctx, state.ship);
   for (const shot of state.shots) drawRect(ctx, shot, COLORS.shot);
-  for (const enemy of state.enemies) drawRect(ctx, enemy, COLORS.enemy);
+  for (const enemy of state.enemies) drawEnemy(ctx, enemy);
   drawHud(ctx, state);
   if (state.isOver) drawGameOver(ctx, state);
 }
@@ -271,6 +305,23 @@ function drawShip(ctx, ship) {
   ctx.moveTo(ship.x + ship.width / 2, ship.y);
   ctx.lineTo(ship.x + ship.width, ship.y + ship.height);
   ctx.lineTo(ship.x, ship.y + ship.height);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawEnemy(ctx, enemy) {
+  if (isTriangle(enemy)) drawTriangleEnemy(ctx, enemy);
+  else drawRect(ctx, enemy, COLORS.enemy);
+}
+
+// A purple triangle with a flat top and its point at the bottom middle.
+// Collisions still use its rectangle.
+function drawTriangleEnemy(ctx, enemy) {
+  ctx.fillStyle = COLORS.triangle;
+  ctx.beginPath();
+  ctx.moveTo(enemy.x, enemy.y);
+  ctx.lineTo(enemy.x + enemy.width, enemy.y);
+  ctx.lineTo(enemy.x + enemy.width / 2, enemy.y + enemy.height);
   ctx.closePath();
   ctx.fill();
 }
@@ -354,7 +405,8 @@ if (typeof module !== "undefined") {
     CANVAS_WIDTH, CANVAS_HEIGHT, SHIP_WIDTH, SHIP_HEIGHT, SHIP_BOTTOM_MARGIN, SHIP_SPEED,
     SHOT_WIDTH, SHOT_HEIGHT, SHOT_SPEED, SHOT_DELAY, ENEMY_SIZE, ENEMY_SPEED,
     ENEMY_SPAWN_DELAY, POINTS_PER_ENEMY, STARTING_LIVES, MAX_FRAME_TIME, HIGH_SCORE_KEY,
-    createGame, resetGame, createInput, updateGame, rectsOverlap,
+    TRIANGLE_CHANCE, TRIANGLE_FALL_SPEED, TRIANGLE_SIDE_SPEED, COLORS,
+    createGame, resetGame, createInput, updateGame, rectsOverlap, createEnemy,
     handleKeyDown, handleKeyUp, drawGame, hudText,
     createHighScore, updateHighScore, loadHighScore, saveHighScore,
   };
