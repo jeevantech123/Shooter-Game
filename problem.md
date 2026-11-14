@@ -52,3 +52,11 @@ People who are taking a short break from work or studying may want a quick game 
 
 \- R1. A new type of enemy. A purple triangle that faces downward, moves half as slow as the red squares but moves left and right sideways
 
+
+
+\# Round 5 Requirements
+
+
+
+\- R1. Players can press ESC on their keyboard to pause and un-pause the game.
+

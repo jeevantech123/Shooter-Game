@@ -60,6 +60,10 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 \- `createEnemy(random)` uses `random()` for x first, then for the kind, then for a triangle's direction. Keep x first: tests that fix `random` at 0.5 rely on getting only red squares, centered above the ship.
 
+\- Esc pauses the game (`isPaused`). Put any new per-frame game logic inside `updateGame()`, after its first line, which returns early while the game is over or paused, so a pause freezes it too. Do not add timers outside the game state: they would keep running during a pause.
+
+\- A key that toggles something (like Esc for pause) acts only on a fresh press. `handleKeyDown` receives the browser's `event.repeat` and ignores repeats, so holding the key down does not flip it on and off.
+
 
 
 \## Tests
@@ -95,6 +99,8 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 \- `problem.md`, `spec.md`, and `CLAUDE.md` use escaped Markdown (`\#`, `\-`) with blank lines between items. Keep that style when editing `spec.md` or `CLAUDE.md`.
 
 \- Never undo or amend a commit. Commit in small steps with messages that say what changed and why.
+
+\- Before each commit, check `git diff` and confirm that every edit you meant to make is there.
 
 \- At the start of a round, list that round's requirements from `problem.md` and ask about anything unclear before writing code. Requirement IDs can be reused: a later round's R1 can replace an earlier R1 (Round 2) or add a new feature beside it (Rounds 3 and 4). Ask if it is not clear which.
 
