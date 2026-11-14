@@ -149,9 +149,8 @@ test("R1/R4: shooting a triangle removes it and scores 10, like a square", () =>
   const ship = state.ship;
   // Close above the ship, so the shot reaches it before it drifts sideways.
   state.enemies.push(triangleAt(ship.x + (ship.width - game.ENEMY_SIZE) / 2, ship.y - 60, 1));
-  game.handleKeyDown(state, input, "Space");
-  game.handleKeyUp(input, "Space");
-  step(game, state, input, 0.5);
+  game.handleKeyDown(state, input, "Space"); // held while the game runs, so a shot fires
+  step(game, state, input, 0.2);
   assert.equal(state.enemies.length, 0);
   assert.equal(state.score, game.POINTS_PER_ENEMY);
 });
