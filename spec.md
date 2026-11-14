@@ -66,6 +66,16 @@ Then open http://localhost:8000 in a browser.
 
 \- Pressing Enter on the game-over screen resets the score and lives, puts the ship back at its starting position, and starts again, without reloading the page. 
 
+\- Pressing Esc during play pauses the game. Everything in the game stops: the ship, shots, enemies, new enemies appearing, and the delay between shots. The game is dimmed and shows "Paused" with "Press Esc to resume" underneath. The score and lives stay visible.
+
+\- Pressing Esc again un-pauses the game, and play continues exactly where it stopped.
+
+\- While paused, the move keys and Space do nothing in the game. A key that is still held down when the game un-pauses works as normal from then on.
+
+\- Esc does nothing on the game-over screen. Restarting with Enter always starts a game that is not paused.
+
+\- A line of control hints under the canvas lists the keys, including Esc to pause.
+
 \- A High Score panel sits to the right of the canvas, outside it. It shows the label "High Score" and the highest score ever recorded in this browser. It shows 0 when no score has been recorded yet. On a screen too narrow for both, the panel may wrap below the canvas.
 
 \- The high score updates live: as soon as the current score is higher than the high score, the panel shows the new score and it is saved. A lower score never lowers it.
@@ -84,7 +94,9 @@ Then open http://localhost:8000 in a browser.
 
 \- Collisions are simple rectangle overlap checks. The ship and the purple triangle are drawn as triangles, but each is hit-tested with its rectangle.
 
-\- Game state (ship, shots, enemies, score, lives) is kept in plain JavaScript variables. Each enemy records its kind (square or triangle), and a triangle also records its sideways direction.
+\- While the game is paused, the game loop keeps running and redrawing but skips the update, so no game time passes.
+
+\- Game state (ship, shots, enemies, score, lives, and whether the game is paused) is kept in plain JavaScript variables. Each enemy records its kind (square or triangle), and a triangle also records its sideways direction.
 
 \- The high score is kept apart from the game state, so restarting does not clear it. It is stored under one local storage key in this browser only; nothing is sent over the network.
 
