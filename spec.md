@@ -48,6 +48,14 @@ Then open http://localhost:8000 in a browser.
 
 \- A new enemy appears at a random position at the top about once a second, and moves downward. 
 
+\- There are two kinds of enemy. Each new enemy is a red square, or, about one time in four, a purple triangle instead. The total rate stays about one enemy a second.
+
+\- A red square falls straight down.
+
+\- A purple triangle is drawn pointing downward. It falls at half the speed of a red square. At the same time it moves sideways at a steady speed, starting left or right at random, and turns around when it reaches the left or right edge, so it never leaves the canvas.
+
+\- Both kinds are the same size and follow the same rules: shooting one scores 10, and one that touches the ship or reaches the bottom costs one life.
+
 \- If a shot overlaps an enemy, both disappear and the score goes up by 10. 
 
 \- The score is drawn in the top-left corner during play. 
