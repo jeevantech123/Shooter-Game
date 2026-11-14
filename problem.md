@@ -44,3 +44,11 @@ People who are taking a short break from work or studying may want a quick game 
 
 \- R1. There is a High Score snippet to the right of the canvas, showing the top high score ever recorded
 
+
+
+\# Round 4 Requirements
+
+
+
+\- R1. A new type of enemy. A purple triangle that faces downward, moves half as slow as the red squares but moves left and right sideways
+
