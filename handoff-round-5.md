@@ -129,7 +129,7 @@ This runs every `tests/*.test.js` file. For a short summary, run `node --test 2>
 - **The Round 1 page test "full round"** uses real `Math.random` and expects Game Over within 20 s. It passed in three runs in a row. If it ever fails, the slower triangles are the likely cause.
 - **The R9/rules test bans some words** in `index.html`, `style.css`, and `game.js`, even in comments: `http://`/`https://`, `fetch`, `XMLHttpRequest`, `WebSocket`, `<input`, `password`, `login`.
 - **The input object is not reset on restart or on pause.** No spec item covers this. Held keys carry over, on purpose (see `0009`).
-- **`spec.md` and `CLAUDE.md` use LF line endings,** escaped Markdown (`\-`, `\#`), one blank line between list items, and three blank lines before a `\##` heading. Check with `grep -n "" spec.md | cat -A` before an Edit.
+- **`spec.md` and `CLAUDE.md` use LF line endings,** escaped Markdown (`-`, `#`), one blank line between list items, and three blank lines before a `##` heading. Check with `grep -n "" spec.md | cat -A` before an Edit.
 - **Do not pipe a Python script into `python`/`py` through a bash heredoc.** It hangs. Use the Edit tool.
 - **Git prints "LF will be replaced by CRLF" warnings** on commit. They are harmless.
 - **Never commit a handoff file or `CLAUDE.md` changes yourself.**

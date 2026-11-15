@@ -103,7 +103,7 @@ This runs every `tests/*.test.js` file. Run `node --test 2>&1 | grep -E "^(✖|�
 
 - **Requirement IDs get reused.** Round 2's "R1" *replaces* Round 1's R1 instead of adding R10. Tests labelled `R1` in `01-initial-build.test.js` check left/right; those in `02-…` check up/down. Read each new round's list in `problem.md` carefully, and ask if an ID's meaning is unclear.
 - **`HANDOFF.md` is wrong in places:** it says `decision.md` is in the project root (it is now `docs/decisions/decisions.md`), it says 39 tests and "the next test number is 02" (the next is **03**), it says the user's `CLAUDE.md`/`spec.md` edits are uncommitted (they were committed before Round 2), and it says the spec has an unfinished sentence (it is fixed).
-- **`problem.md`, `spec.md`, and `CLAUDE.md` use escaped Markdown** (`\#`, `\-`) with extra blank lines. This is the user's style. Keep it when editing `spec.md` or `CLAUDE.md`, and do not "clean it up".
+- **`problem.md`, `spec.md`, and `CLAUDE.md` use escaped Markdown** (`#`, `-`) with extra blank lines. This is the user's style. Keep it when editing `spec.md` or `CLAUDE.md`, and do not "clean it up".
 - **The R8 test does `assert.deepEqual(state, game.createGame())` after a restart.** Any new field added to the game state must be created by `createGame()`, or that test will fail.
 - **The `input` object is not reset on restart.** Keys held through Enter stay held. No test or spec item covers this; it has not been a problem so far.
 - **Tests that move the ship vertically should keep enemies away.** `02-…` sets `state.spawnTimer = -100` for this, because a ship moving up can now run into falling enemies and lose lives mid-test.
