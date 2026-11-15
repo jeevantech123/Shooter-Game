@@ -20,7 +20,15 @@ body {
   max-width: 100%;
 }
 
-.high-score {
+/* The High Score panel with the Shotgun cooldown panel stacked under it. */
+.side-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.high-score,
+.shotgun {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,11 +39,13 @@ body {
   background: #000010;
 }
 
-.high-score-label {
+.high-score-label,
+.panel-label {
   font-size: 14px;
 }
 
-.high-score-value {
+.high-score-value,
+.panel-value {
   font-size: 28px;
   color: #ffe14f;
 }

@@ -17,6 +17,11 @@ const SHOT_HEIGHT = 12;
 const SHOT_SPEED = 500; // pixels per second, upward
 const SHOT_DELAY = 0.25; // seconds between shots
 
+// Shotgun (Round 6): Shift fires a fan of pellets, then has to cool down.
+const SHOTGUN_COOLDOWN = 10; // seconds before the next blast
+const SHOTGUN_PELLETS = 5; // pellets in one blast
+const SHOTGUN_SPREAD_SPEED = 100; // extra sideways speed between neighbouring pellets, px/s
+
 const ENEMY_SIZE = 30;
 const ENEMY_SPEED = 100; // pixels per second, downward
 const ENEMY_SPAWN_DELAY = 1.0; // seconds between new enemies
@@ -64,6 +69,7 @@ function createGame() {
     isOver: false,
     isPaused: false, // Esc pauses and un-pauses during play
     shotTimer: 0, // time left until the ship may fire again
+    shotgunTimer: 0, // time left until the shotgun may fire again (0 = ready)
     spawnTimer: 0, // time since the last enemy appeared
   };
 }
@@ -85,6 +91,7 @@ function updateGame(state, input, dt, random = Math.random) {
   if (state.isOver || state.isPaused) return;
   moveShip(state, input, dt);
   updateFiring(state, input, dt);
+  updateShotgunCooldown(state, dt);
   moveShots(state, dt);
   moveEnemies(state, dt);
   updateSpawning(state, dt, random); // after moving, so new enemies start at the top
@@ -125,9 +132,43 @@ function createShot(ship) {
   };
 }
 
+// The cooldown only counts down during play, so a pause freezes it.
+function updateShotgunCooldown(state, dt) {
+  state.shotgunTimer = Math.max(0, state.shotgunTimer - dt);
+}
+
+// Called on a fresh Shift press. Does nothing while paused, over, or cooling down.
+function fireShotgun(state) {
+  if (state.isOver || state.isPaused || state.shotgunTimer > 0) return;
+  for (let i = 0; i < SHOTGUN_PELLETS; i++) {
+    const side = i - (SHOTGUN_PELLETS - 1) / 2; // -2, -1, 0, 1, 2 for five pellets
+    state.shots.push(createPellet(state.ship, side * SHOTGUN_SPREAD_SPEED));
+  }
+  state.shotgunTimer = SHOTGUN_COOLDOWN;
+}
+
+// A pellet is a normal shot that also drifts sideways at `dx` pixels per second.
+function createPellet(ship, dx) {
+  return { ...createShot(ship), dx };
+}
+
+// "Ready", or the whole seconds left on the cooldown (10, 9, ... 1).
+function shotgunCooldownText(state) {
+  return state.shotgunTimer > 0 ? String(Math.ceil(state.shotgunTimer)) : "Ready";
+}
+
+// Normal shots go straight up; pellets also move sideways. Both are removed
+// once they have left the canvas.
 function moveShots(state, dt) {
-  for (const shot of state.shots) shot.y -= SHOT_SPEED * dt;
-  state.shots = state.shots.filter((shot) => shot.y + shot.height > 0);
+  for (const shot of state.shots) {
+    shot.y -= SHOT_SPEED * dt;
+    if (shot.dx) shot.x += shot.dx * dt;
+  }
+  state.shots = state.shots.filter(isOnCanvas);
+}
+
+function isOnCanvas(rect) {
+  return rectsOverlap(rect, { x: 0, y: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
 }
 
 function updateSpawning(state, dt, random) {
@@ -266,6 +307,7 @@ const DOWN_KEYS = ["ArrowDown", "KeyS"];
 const FIRE_KEYS = ["Space"];
 const RESTART_KEYS = ["Enter", "NumpadEnter"];
 const PAUSE_KEYS = ["Escape"];
+const SHOTGUN_KEYS = ["ShiftLeft", "ShiftRight"];
 
 // Returns true when the key belongs to the game (so the page should not scroll).
 // `repeat` is true for the extra keydowns a browser sends while a key is held.
@@ -278,6 +320,10 @@ function handleKeyDown(state, input, code, repeat = false) {
   }
   if (PAUSE_KEYS.includes(code)) {
     if (!repeat) togglePause(state);
+    return true;
+  }
+  if (SHOTGUN_KEYS.includes(code)) {
+    if (!repeat) fireShotgun(state); // one blast per press, never on a held key
     return true;
   }
   return setKey(input, code, true);
@@ -405,10 +451,12 @@ function startGame() {
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const highScoreElement = document.getElementById("high-score");
+  const shotgunElement = document.getElementById("shotgun-cooldown");
   const state = createGame();
   const input = createInput();
   const highScore = createHighScore(browserStorage());
   highScoreElement.textContent = String(highScore.best);
+  showShotgunCooldown(shotgunElement, state);
 
   window.addEventListener("keydown", (event) => {
     if (handleKeyDown(state, input, event.code, event.repeat)) event.preventDefault();
@@ -424,10 +472,17 @@ function startGame() {
     lastTime = now;
     updateGame(state, input, dt);
     if (updateHighScore(highScore, state.score)) highScoreElement.textContent = String(highScore.best);
+    showShotgunCooldown(shotgunElement, state);
     drawGame(ctx, state);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+}
+
+// Update the Shotgun panel under the High Score, only when its text changes.
+function showShotgunCooldown(element, state) {
+  const text = shotgunCooldownText(state);
+  if (element.textContent !== text) element.textContent = text;
 }
 
 if (typeof document !== "undefined") startGame();
@@ -439,8 +494,9 @@ if (typeof module !== "undefined") {
     SHOT_WIDTH, SHOT_HEIGHT, SHOT_SPEED, SHOT_DELAY, ENEMY_SIZE, ENEMY_SPEED,
     ENEMY_SPAWN_DELAY, POINTS_PER_ENEMY, STARTING_LIVES, MAX_FRAME_TIME, HIGH_SCORE_KEY,
     TRIANGLE_CHANCE, TRIANGLE_FALL_SPEED, TRIANGLE_SIDE_SPEED, COLORS,
+    SHOTGUN_COOLDOWN, SHOTGUN_PELLETS, SHOTGUN_SPREAD_SPEED,
     createGame, resetGame, createInput, updateGame, rectsOverlap, createEnemy,
-    handleKeyDown, handleKeyUp, drawGame, hudText,
+    handleKeyDown, handleKeyUp, drawGame, hudText, shotgunCooldownText,
     createHighScore, updateHighScore, loadHighScore, saveHighScore,
   };
 }

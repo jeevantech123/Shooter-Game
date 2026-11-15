@@ -9,12 +9,18 @@
 <body>
   <div class="game-row">
     <canvas id="game" width="480" height="640"></canvas>
-    <aside class="high-score">
-      <span class="high-score-label">High Score</span>
-      <span id="high-score" class="high-score-value">0</span>
-    </aside>
+    <div class="side-panels">
+      <aside class="high-score">
+        <span class="high-score-label">High Score</span>
+        <span id="high-score" class="high-score-value">0</span>
+      </aside>
+      <aside class="shotgun">
+        <span class="panel-label">Shotgun</span>
+        <span id="shotgun-cooldown" class="panel-value">Ready</span>
+      </aside>
+    </div>
   </div>
-  <p class="controls">Move: &larr; &rarr; &uarr; &darr; or W A S D &middot; Fire: Space &middot; Pause: Esc &middot; Restart: Enter</p>
+  <p class="controls">Move: &larr; &rarr; &uarr; &darr; or W A S D &middot; Fire: Space &middot; Shotgun: Shift &middot; Pause: Esc &middot; Restart: Enter</p>
   <script src="game.js"></script>
 </body>
 </html>
