@@ -62,7 +62,8 @@ function loadGameInFakePage({ storage, random } = {}) {
   let nextFrame = null;
   const canvas = { width: 480, height: 640, getContext: () => fake.ctx };
   const highScoreElement = { textContent: "" };
-  const elements = { game: canvas, "high-score": highScoreElement };
+  const shotgunElement = { textContent: "" }; // the Shotgun cooldown panel (Round 6)
+  const elements = { game: canvas, "high-score": highScoreElement, "shotgun-cooldown": shotgunElement };
 
   const sandbox = {
     document: { getElementById: (id) => elements[id] || null },
@@ -90,6 +91,7 @@ function loadGameInFakePage({ storage, random } = {}) {
     fake,
     listeners,
     highScoreText: () => highScoreElement.textContent,
+    shotgunText: () => shotgunElement.textContent,
     hasPendingFrame: () => nextFrame !== null,
     press: (code, extra) => sendKey("keydown", code, extra),
     release: (code) => sendKey("keyup", code),
