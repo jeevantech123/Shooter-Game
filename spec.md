@@ -74,15 +74,27 @@ Then open http://localhost:8000 in a browser.
 
 - The shotgun is ready at the start of every game, including after restarting with Enter. Space and Shift are separate: normal shots do not start the shotgun cooldown, and a blast does not delay normal shots.
 
-- Pressing Esc during play pauses the game. Everything in the game stops: the ship, shots, enemies, new enemies appearing, the delay between shots, and the shotgun cooldown. The game is dimmed and shows "Paused" with "Press Esc to resume" underneath. The score and lives stay visible.
+- Ctrl (left or right) turns the auto shotgun on or off during play. Each fresh press of Ctrl flips it once. Holding Ctrl down does not flip it again.
+
+- While the auto shotgun is on, the shotgun fires by itself whenever it is ready. If it is ready when auto is turned on, it fires right away. After that it fires again as soon as each 10-second cooldown ends. An automatic blast is the same five-pellet fan as a Shift blast and starts the same cooldown, so the cooldown still applies: auto never fires more than once every 10 seconds. If a cooldown is already running when auto is turned on, the first automatic blast waits for it to end.
+
+- Turning the auto shotgun off stops the automatic blasts. A cooldown that is already running keeps counting down, and Shift then fires by hand as before. Shift also still fires by hand while auto is on, if the shotgun is ready.
+
+- The auto shotgun is off at the start of every game, including after restarting with Enter.
+
+- Ctrl is also a browser shortcut key. Pressing Ctrl together with another key (for example Ctrl+W, which closes the tab) may still do what the browser does, and the game cannot always stop it. Ctrl pressed on its own is safe.
+
+- Pressing Esc during play pauses the game. Everything in the game stops: the ship, shots, enemies, new enemies appearing, the delay between shots, the shotgun cooldown, and the auto shotgun. The game is dimmed and shows "Paused" with "Press Esc to resume" underneath. The score and lives stay visible.
 
 - Pressing Esc again un-pauses the game, and play continues exactly where it stopped.
 
-- While paused, the move keys, Space, and Shift do nothing in the game. A move key or Space that is still held down when the game un-pauses works as normal from then on. A Shift press during the pause is not saved up: it does not fire when the game un-pauses.
+- While paused, the move keys, Space, Shift, and Ctrl do nothing in the game. A move key or Space that is still held down when the game un-pauses works as normal from then on. A Shift press during the pause is not saved up: it does not fire when the game un-pauses. A Ctrl press during the pause does not change the auto shotgun.
 
-- Esc and Shift do nothing on the game-over screen. Restarting with Enter always starts a game that is not paused.
+- If the auto shotgun is on when the game is paused, it stays on. It does not fire during the pause, and when the game un-pauses it carries on: it fires as soon as the shotgun is ready.
 
-- A line of control hints under the canvas lists the keys, including Esc to pause and Shift for the shotgun.
+- Esc, Shift, and Ctrl do nothing on the game-over screen. Restarting with Enter always starts a game that is not paused.
+
+- A line of control hints under the canvas lists the keys, including Esc to pause, Shift for the shotgun, and Ctrl for the auto shotgun.
 
 - A High Score panel sits to the right of the canvas, outside it. It shows the label "High Score" and the highest score ever recorded in this browser. It shows 0 when no score has been recorded yet. On a screen too narrow for both, the panel may wrap below the canvas.
 
@@ -91,6 +103,8 @@ Then open http://localhost:8000 in a browser.
 - The high score is saved in the browser's local storage, so it is kept when the game restarts and when the page is reloaded or the browser is closed. Restarting with Enter does not reset it. If local storage is not available, the game still works and keeps the high score until the page is closed.
 
 - A Shotgun panel sits directly under the High Score panel, outside the canvas, in the same style. It shows the label "Shotgun" and the word "Ready" when the shotgun can fire. During the cooldown it shows the whole seconds left instead, counting down 10, 9, ... 1, and then "Ready" again. Its countdown stops while the game is paused. On the game-over screen it keeps its last value, and restarting makes it "Ready".
+
+- An Auto Shotgun panel sits directly under the Shotgun panel, outside the canvas, in the same style. It shows the label "Auto Shotgun" and the word "On" or "Off". It always shows, and it changes as soon as Ctrl flips the setting. On the game-over screen it keeps its last value, and restarting makes it "Off".
 
 - No login or account is needed. 
 
@@ -106,9 +120,11 @@ Then open http://localhost:8000 in a browser.
 
 - While the game is paused, the game loop keeps running and redrawing but skips the update, so no game time passes.
 
-- Game state (ship, shots, enemies, score, lives, whether the game is paused, and the time left on the shotgun cooldown) is kept in plain JavaScript variables. Each enemy records its kind (square or triangle), and a triangle also records its sideways direction.
+- Game state (ship, shots, enemies, score, lives, whether the game is paused, the time left on the shotgun cooldown, and whether the auto shotgun is on) is kept in plain JavaScript variables. Each enemy records its kind (square or triangle), and a triangle also records its sideways direction.
 
 - A shotgun pellet is a shot that also moves sideways at a steady speed. A normal shot has no sideways speed and goes straight up.
+
+- The auto shotgun is checked in the game update, right after the cooldown counts down: when auto is on and the shotgun is ready, it fires a blast. Because this is part of the update, a pause stops it too.
 
 - The high score is kept apart from the game state, so restarting does not clear it. It is stored under one local storage key in this browser only; nothing is sent over the network.
 
