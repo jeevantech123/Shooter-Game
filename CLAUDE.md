@@ -62,9 +62,13 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 - Esc pauses the game (`isPaused`). Put any new per-frame game logic inside `updateGame()`, after its first line, which returns early while the game is over or paused, so a pause freezes it too. Do not add timers outside the game state: they would keep running during a pause.
 
-- A key that toggles something (like Esc for pause) or triggers a one-time action (like Shift for the shotgun) acts only on a fresh press. `handleKeyDown` receives the browser's `event.repeat` and ignores repeats, so holding the key down does not flip it on and off or fire it again.
+- A key that toggles something (like Esc for pause, or Ctrl for the auto shotgun) or triggers a one-time action (like Shift for the shotgun) acts only on a fresh press. `handleKeyDown` receives the browser's `event.repeat` and ignores repeats, so holding the key down does not flip it on and off or fire it again.
 
 - Every shot, including a shotgun pellet, lives in `state.shots`. A pellet also has a sideways speed `dx`. A shot with no `dx` must still go straight up, because older tests build shots as plain `{ x, y, width, height }`.
+
+- Every shotgun blast, whether by hand (Shift) or automatic (the auto shotgun), goes through `fireShotgun(state)`, so the cooldown, pause, and game-over checks live in one place.
+
+- Each side panel (High Score, Shotgun, Auto Shotgun, ...) is an `<aside>` inside `<div class="side-panels">` and is listed in the shared panel rule in `style.css`. Do not put a `<div>` inside `.side-panels`: the HTML tests read that column only up to its first `</div>`.
 
 
 
