@@ -63,7 +63,13 @@ function loadGameInFakePage({ storage, random } = {}) {
   const canvas = { width: 480, height: 640, getContext: () => fake.ctx };
   const highScoreElement = { textContent: "" };
   const shotgunElement = { textContent: "" }; // the Shotgun cooldown panel (Round 6)
-  const elements = { game: canvas, "high-score": highScoreElement, "shotgun-cooldown": shotgunElement };
+  const autoShotgunElement = { textContent: "" }; // the Auto Shotgun panel (Round 7)
+  const elements = {
+    game: canvas,
+    "high-score": highScoreElement,
+    "shotgun-cooldown": shotgunElement,
+    "auto-shotgun": autoShotgunElement,
+  };
 
   const sandbox = {
     document: { getElementById: (id) => elements[id] || null },
@@ -92,6 +98,7 @@ function loadGameInFakePage({ storage, random } = {}) {
     listeners,
     highScoreText: () => highScoreElement.textContent,
     shotgunText: () => shotgunElement.textContent,
+    autoShotgunText: () => autoShotgunElement.textContent,
     hasPendingFrame: () => nextFrame !== null,
     press: (code, extra) => sendKey("keydown", code, extra),
     release: (code) => sendKey("keyup", code),
