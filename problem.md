@@ -60,3 +60,11 @@ People who are taking a short break from work or studying may want a quick game 
 
 \- R1. Players can press ESC on their keyboard to pause and un-pause the game.
 
+
+
+\# Round 6 Requirements
+
+
+
+\- R1. Players can press shift to fire a special shotgun attack, with a cooldown of 10 seconds. The cooldown timer is shown under the high score block.
+

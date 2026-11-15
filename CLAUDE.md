@@ -62,7 +62,9 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 
 \- Esc pauses the game (`isPaused`). Put any new per-frame game logic inside `updateGame()`, after its first line, which returns early while the game is over or paused, so a pause freezes it too. Do not add timers outside the game state: they would keep running during a pause.
 
-\- A key that toggles something (like Esc for pause) acts only on a fresh press. `handleKeyDown` receives the browser's `event.repeat` and ignores repeats, so holding the key down does not flip it on and off.
+\- A key that toggles something (like Esc for pause) or triggers a one-time action (like Shift for the shotgun) acts only on a fresh press. `handleKeyDown` receives the browser's `event.repeat` and ignores repeats, so holding the key down does not flip it on and off or fire it again.
+
+\- Every shot, including a shotgun pellet, lives in `state.shots`. A pellet also has a sideways speed `dx`. A shot with no `dx` must still go straight up, because older tests build shots as plain `{ x, y, width, height }`.
 
 
 
@@ -73,6 +75,8 @@ Do not edit `problem.md`. If the spec and the code disagree, tell me before chan
 \- Run all tests with `node --test` (Node 18 or newer, nothing to install). Every test from earlier rounds must keep passing.
 
 \- Each round or change gets a new numbered file, `tests/NN-short-name.test.js`. Shared fakes live in `tests/helpers.js`.
+
+\- When `startGame()` looks up a new page element with `document.getElementById`, add a fake element with that id to `loadGameInFakePage` in `tests/helpers.js`. Otherwise every page test fails, because the fake page returns `null` for unknown ids.
 
 \- Each test name starts with the requirement ID it checks, such as `R1:`. A test that checks two requirements together uses `R1/R2:`.
 
