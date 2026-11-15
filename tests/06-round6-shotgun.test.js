@@ -1,4 +1,4 @@
-// Tests for Round 6 of Shooter-Game: R1 lets the player press Shift to fire a
+// Tests for Round 6 of Shooter-Game: R14 lets the player press Shift to fire a
 // special shotgun blast with a 10-second cooldown, and shows the cooldown under
 // the High Score panel (see problem.md and spec.md). A blast is five pellets in
 // a fan that act like normal shots. Each blast needs a fresh Shift press. The
@@ -40,14 +40,14 @@ function noseX(ship) {
   return ship.x + (ship.width - game.SHOT_WIDTH) / 2;
 }
 
-// ---- R1: the blast -----------------------------------------------------------
+// ---- R14: the blast -----------------------------------------------------------
 
-test("R1: the shotgun cooldown is 10 seconds and a blast has 5 pellets", () => {
+test("R14: the shotgun cooldown is 10 seconds and a blast has 5 pellets", () => {
   assert.equal(game.SHOTGUN_COOLDOWN, 10);
   assert.equal(game.SHOTGUN_PELLETS, 5);
 });
 
-test("R1: pressing Shift fires five pellets at once from the ship's nose", () => {
+test("R14: pressing Shift fires five pellets at once from the ship's nose", () => {
   const { state, input } = newGame();
   assert.equal(game.handleKeyDown(state, input, "ShiftLeft"), true, "Shift is a game key");
   playFor(state, input, FRAME);
@@ -60,14 +60,14 @@ test("R1: pressing Shift fires five pellets at once from the ship's nose", () =>
   }
 });
 
-test("R1: the right Shift key fires a blast too", () => {
+test("R14: the right Shift key fires a blast too", () => {
   const { state, input } = newGame();
   assert.equal(game.handleKeyDown(state, input, "ShiftRight"), true);
   playFor(state, input, FRAME);
   assert.equal(state.shots.length, 5);
 });
 
-test("R1: the pellets spread in a fan: one straight up, two to the left, two to the right", () => {
+test("R14: the pellets spread in a fan: one straight up, two to the left, two to the right", () => {
   const { state, input } = newGame();
   const startX = noseX(state.ship);
   const startY = state.ship.y - game.SHOT_HEIGHT;
@@ -83,7 +83,7 @@ test("R1: the pellets spread in a fan: one straight up, two to the left, two to 
   for (const pellet of state.shots) assert.ok(pellet.y < startY - 100, "every pellet flies upward");
 });
 
-test("R1: pellets fly until they leave the canvas, at the top or a side", () => {
+test("R14: pellets fly until they leave the canvas, at the top or a side", () => {
   const { state, input } = newGame();
   state.ship.x = 0; // at the left edge, so the left pellets leave by the side
   blast(state, input);
@@ -97,7 +97,7 @@ test("R1: pellets fly until they leave the canvas, at the top or a side", () => 
   assert.equal(state.shots.length, 0, "every pellet has left the canvas");
 });
 
-test("R1: a pellet that hits an enemy destroys it and scores 10; one blast can destroy several", () => {
+test("R14: a pellet that hits an enemy destroys it and scores 10; one blast can destroy several", () => {
   const { state, input } = newGame();
   blast(state, input);
   playFor(state, input, 0.5); // the pellets are now spread out
@@ -115,9 +115,9 @@ test("R1: a pellet that hits an enemy destroys it and scores 10; one blast can d
   assert.equal(state.score, 5 * game.POINTS_PER_ENEMY);
 });
 
-// ---- R1: the cooldown --------------------------------------------------------
+// ---- R14: the cooldown --------------------------------------------------------
 
-test("R1: Shift during the 10-second cooldown does nothing; a fresh press after it fires again", () => {
+test("R14: Shift during the 10-second cooldown does nothing; a fresh press after it fires again", () => {
   const { state, input } = newGame();
   blast(state, input);
   assert.equal(state.shots.length, 5);
@@ -130,7 +130,7 @@ test("R1: Shift during the 10-second cooldown does nothing; a fresh press after 
   assert.equal(state.shots.length, 5, "ready again after 10 s");
 });
 
-test("R1: holding Shift down (key repeat) does not fire again when the cooldown ends", () => {
+test("R14: holding Shift down (key repeat) does not fire again when the cooldown ends", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "ShiftLeft");
   playFor(state, input, 2); // the first blast's pellets have all left by now
@@ -145,7 +145,7 @@ test("R1: holding Shift down (key repeat) does not fire again when the cooldown 
   assert.equal(state.shots.length, 5, "a fresh press fires");
 });
 
-test("R1: the shotgun is ready at the start of a game and again after restarting", () => {
+test("R14: the shotgun is ready at the start of a game and again after restarting", () => {
   const { state, input } = newGame();
   assert.equal(game.shotgunCooldownText(state), "Ready");
   blast(state, input);
@@ -159,7 +159,7 @@ test("R1: the shotgun is ready at the start of a game and again after restarting
   assert.equal(state.shots.length, 5);
 });
 
-test("R1: Space and Shift are separate: neither one's delay holds back the other", () => {
+test("R14: Space and Shift are separate: neither one's delay holds back the other", () => {
   // Space held and Shift pressed together: one normal shot and five pellets.
   let { state, input } = newGame();
   game.handleKeyDown(state, input, "Space");
@@ -177,7 +177,7 @@ test("R1: Space and Shift are separate: neither one's delay holds back the other
   assert.equal(state.shots.length, 6, "five pellets and no extra normal shot");
 });
 
-test("R1: while paused, Shift does nothing and is not saved up for later", () => {
+test("R14: while paused, Shift does nothing and is not saved up for later", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "Escape");
   assert.equal(game.handleKeyDown(state, input, "ShiftLeft"), true, "still a game key while paused");
@@ -189,7 +189,7 @@ test("R1: while paused, Shift does nothing and is not saved up for later", () =>
   assert.equal(game.shotgunCooldownText(state), "Ready", "the cooldown never started");
 });
 
-test("R1: the shotgun cooldown stops while the game is paused", () => {
+test("R14: the shotgun cooldown stops while the game is paused", () => {
   const { state, input } = newGame();
   blast(state, input);
   playFor(state, input, 5.5);
@@ -207,7 +207,7 @@ test("R1: the shotgun cooldown stops while the game is paused", () => {
   assert.equal(state.shots.length, 5);
 });
 
-test("R1: Shift does nothing on the game-over screen", () => {
+test("R14: Shift does nothing on the game-over screen", () => {
   const { state, input } = newGame();
   state.lives = 0;
   playFor(state, input, FRAME);
@@ -218,9 +218,9 @@ test("R1: Shift does nothing on the game-over screen", () => {
   assert.equal(game.shotgunCooldownText(state), "Ready");
 });
 
-// ---- R1: the cooldown timer ---------------------------------------------------
+// ---- R14: the cooldown timer ---------------------------------------------------
 
-test("R1: the cooldown timer counts down whole seconds 10 to 1, then shows Ready", () => {
+test("R14: the cooldown timer counts down whole seconds 10 to 1, then shows Ready", () => {
   const { state, input } = newGame();
   assert.equal(game.shotgunCooldownText(state), "Ready");
   game.handleKeyDown(state, input, "ShiftLeft");
@@ -232,7 +232,7 @@ test("R1: the cooldown timer counts down whole seconds 10 to 1, then shows Ready
   assert.deepEqual(shown, ["10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "Ready"]);
 });
 
-test("R1/page: index.html has a Shotgun panel directly under the High Score panel", () => {
+test("R14/page: index.html has a Shotgun panel directly under the High Score panel", () => {
   const html = readProjectFile("index.html");
   const row = html.match(/<div class="game-row">([\s\S]*?)<\/div>\s*<p class="controls">/);
   assert.ok(row, "the panels share the game-row with the canvas");
@@ -249,7 +249,7 @@ test("R1/page: index.html has a Shotgun panel directly under the High Score pane
   assert.match(rule[1], /flex-direction:\s*column/, "the panels are stacked, one under the other");
 });
 
-test("R1/page: Shift fires five pellets on the canvas and the Shotgun panel counts down", () => {
+test("R14/page: Shift fires five pellets on the canvas and the Shotgun panel counts down", () => {
   const page = loadGameInFakePage({ random: () => 0 }); // slow triangles: no lives lost for 12 s
   page.frame();
   assert.equal(page.shotgunText(), "Ready");
@@ -266,7 +266,7 @@ test("R1/page: Shift fires five pellets on the canvas and the Shotgun panel coun
   assert.equal(page.shotgunText(), "Ready");
 });
 
-test("R1/page: Shift while paused fires nothing, and the panel stays Ready", () => {
+test("R14/page: Shift while paused fires nothing, and the panel stays Ready", () => {
   const page = loadGameInFakePage({ random: () => 0 });
   page.frame();
   page.press("Escape");
@@ -280,7 +280,7 @@ test("R1/page: Shift while paused fires nothing, and the panel stays Ready", () 
   assert.equal(page.shotgunText(), "Ready");
 });
 
-test("R1/page: the control hint under the canvas lists Shift for the shotgun", () => {
+test("R14/page: the control hint under the canvas lists Shift for the shotgun", () => {
   const html = readProjectFile("index.html");
   const hint = html.match(/<p class="controls">(.*)<\/p>/);
   assert.ok(hint, "control hint line exists");

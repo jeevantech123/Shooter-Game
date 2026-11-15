@@ -23,10 +23,10 @@ function centerShip(state) {
   state.ship.y = (game.CANVAS_HEIGHT - state.ship.height) / 2;
 }
 
-// ---- R1: up and down keys --------------------------------------------------
+// ---- R10: up and down keys --------------------------------------------------
 
 for (const [code, direction] of [["ArrowUp", -1], ["KeyW", -1], ["ArrowDown", 1], ["KeyS", 1]]) {
-  test(`R1: holding ${code} moves the ship ${direction < 0 ? "up" : "down"}`, () => {
+  test(`R10: holding ${code} moves the ship ${direction < 0 ? "up" : "down"}`, () => {
     const { state, input } = newGame();
     centerShip(state);
     const startY = state.ship.y;
@@ -36,7 +36,7 @@ for (const [code, direction] of [["ArrowUp", -1], ["KeyW", -1], ["ArrowDown", 1]
   });
 }
 
-test("R1: up/down moves at the same speed as left/right", () => {
+test("R10: up/down moves at the same speed as left/right", () => {
   const { state, input } = newGame();
   centerShip(state);
   const start = { ...state.ship };
@@ -52,7 +52,7 @@ test("R1: up/down moves at the same speed as left/right", () => {
   near(upDistance, rightDistance, "distance moved up vs right");
 });
 
-test("R1: releasing an up/down key stops the ship", () => {
+test("R10: releasing an up/down key stops the ship", () => {
   const { state, input } = newGame();
   centerShip(state);
   game.handleKeyDown(state, input, "ArrowUp");
@@ -63,7 +63,7 @@ test("R1: releasing an up/down key stops the ship", () => {
   assert.equal(state.ship.y, stoppedY);
 });
 
-test("R1: up/down keys do not move the ship sideways, and left/right do not move it up or down", () => {
+test("R10: up/down keys do not move the ship sideways, and left/right do not move it up or down", () => {
   const { state, input } = newGame();
   centerShip(state);
   const startX = state.ship.x;
@@ -78,7 +78,7 @@ test("R1: up/down keys do not move the ship sideways, and left/right do not move
   assert.equal(state.ship.y, startY);
 });
 
-test("R1: the ship cannot leave the top or bottom of the canvas", () => {
+test("R10: the ship cannot leave the top or bottom of the canvas", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "ArrowUp");
   step(game, state, input, 5);
@@ -89,7 +89,7 @@ test("R1: the ship cannot leave the top or bottom of the canvas", () => {
   assert.equal(state.ship.y, game.CANVAS_HEIGHT - state.ship.height, "ship stops at the bottom edge");
 });
 
-test("R1: the ship can reach every corner of the canvas but never leaves it", () => {
+test("R10: the ship can reach every corner of the canvas but never leaves it", () => {
   const corners = [
     [["ArrowUp", "ArrowLeft"], 0, 0],
     [["ArrowUp", "ArrowRight"], game.CANVAS_WIDTH - game.SHIP_WIDTH, 0],
@@ -104,7 +104,7 @@ test("R1: the ship can reach every corner of the canvas but never leaves it", ()
   }
 });
 
-test("R1: holding a vertical and a horizontal key moves diagonally at full speed on each axis", () => {
+test("R10: holding a vertical and a horizontal key moves diagonally at full speed on each axis", () => {
   const { state, input } = newGame();
   centerShip(state);
   const start = { ...state.ship };
@@ -115,7 +115,7 @@ test("R1: holding a vertical and a horizontal key moves diagonally at full speed
   near(state.ship.y, start.y - game.SHIP_SPEED * 0.2, "ship y");
 });
 
-test("R1: holding Up and Down together cancels out", () => {
+test("R10: holding Up and Down together cancels out", () => {
   const { state, input } = newGame();
   centerShip(state);
   const startY = state.ship.y;
@@ -125,9 +125,9 @@ test("R1: holding Up and Down together cancels out", () => {
   assert.equal(state.ship.y, startY);
 });
 
-// ---- R1 together with the other requirements -------------------------------
+// ---- R10 together with the other requirements -------------------------------
 
-test("R1/R2: after moving up, shots start from the ship's new position and still travel upward", () => {
+test("R10/R2: after moving up, shots start from the ship's new position and still travel upward", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "ArrowUp");
   step(game, state, input, 0.5);
@@ -142,7 +142,7 @@ test("R1/R2: after moving up, shots start from the ship's new position and still
   assert.ok(state.shots[0].y < startY, "shot moves up");
 });
 
-test("R1/R6: an enemy touching the ship after it has moved up still costs one life", () => {
+test("R10/R6: an enemy touching the ship after it has moved up still costs one life", () => {
   const { state, input } = newGame();
   centerShip(state);
   state.enemies.push({ x: state.ship.x, y: state.ship.y - 5, width: game.ENEMY_SIZE, height: game.ENEMY_SIZE });
@@ -151,7 +151,7 @@ test("R1/R6: an enemy touching the ship after it has moved up still costs one li
   assert.equal(state.lives, 2);
 });
 
-test("R1/R6: an enemy that passes below a raised ship still costs a life at the bottom", () => {
+test("R10/R6: an enemy that passes below a raised ship still costs a life at the bottom", () => {
   const { state, input } = newGame();
   state.ship.y = 100;
   state.enemies.push({ x: state.ship.x, y: game.CANVAS_HEIGHT - game.ENEMY_SIZE - 1, width: game.ENEMY_SIZE, height: game.ENEMY_SIZE });
@@ -160,7 +160,7 @@ test("R1/R6: an enemy that passes below a raised ship still costs a life at the 
   assert.equal(state.lives, 2);
 });
 
-test("R1/R7: the ship does not move up or down after game over", () => {
+test("R10/R7: the ship does not move up or down after game over", () => {
   const { state, input } = newGame();
   state.lives = 0;
   state.isOver = true;
@@ -170,7 +170,7 @@ test("R1/R7: the ship does not move up or down after game over", () => {
   assert.equal(state.ship.y, shipY);
 });
 
-test("R1/R8: restarting puts the ship back at its starting position", () => {
+test("R10/R8: restarting puts the ship back at its starting position", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "ArrowUp");
   game.handleKeyDown(state, input, "ArrowLeft");
@@ -183,9 +183,9 @@ test("R1/R8: restarting puts the ship back at its starting position", () => {
   assert.deepEqual(state.ship, game.createGame().ship);
 });
 
-// ---- R1 in the page --------------------------------------------------------
+// ---- R10 in the page --------------------------------------------------------
 
-test("R1/page: up and down keys stop the page from scrolling", () => {
+test("R10/page: up and down keys stop the page from scrolling", () => {
   const page = loadGameInFakePage();
   for (const code of ["ArrowUp", "ArrowDown", "KeyW", "KeyS"]) {
     assert.equal(page.press(code).defaultPrevented, true, `${code} keydown`);
@@ -193,7 +193,7 @@ test("R1/page: up and down keys stop the page from scrolling", () => {
   }
 });
 
-test("R1/page: holding the up arrow moves the drawn ship to the top edge", () => {
+test("R10/page: holding the up arrow moves the drawn ship to the top edge", () => {
   const page = loadGameInFakePage();
   page.press("ArrowUp");
   page.runFor(3);
@@ -201,7 +201,7 @@ test("R1/page: holding the up arrow moves the drawn ship to the top edge", () =>
   assert.equal(nose.args[1], 0, "ship's nose should be at the top edge");
 });
 
-test("R1/page: the control hint under the canvas mentions up/down movement", () => {
+test("R10/page: the control hint under the canvas mentions up/down movement", () => {
   const html = readProjectFile("index.html");
   const hint = html.match(/<p class="controls">(.*)<\/p>/);
   assert.ok(hint, "control hint line exists");

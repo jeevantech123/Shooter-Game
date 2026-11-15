@@ -1,4 +1,4 @@
-\# Problem
+# Problem
 
 
 
@@ -6,65 +6,57 @@ People who are taking a short break from work or studying may want a quick game 
 
 
 
-\# Initial requirements
+# Initial requirements
 
 
 
-\- R1. The player controls a space ship that moves left and right using the keyboard
-
-\- R2. The player can fire shots from the ship using the keyboard
-
-\- R3. Enemies appear on screen and move toward the player's side of the screen
-
-\- R4. A shot that hits an enemy will destroy that enemy and increase player score
-
-\- R5. The current score is visible
-
-\- R6. If an enemy hits the ship or bottom of screen, the player loses a life
-
-\- R7. The game ends when the player runs out of life and the final score is shown
-
-\- R8. The player can restart after the game ends without reloading the page
-
-\- R9. The game runs in a browser without an account or login
+* R1. The player controls a space ship that moves left and right using the keyboard (Changed by R10 in Round 2).
+* R2. The player can fire shots from the ship using the keyboard
+* R3. Enemies appear on screen and move toward the player's side of the screen
+* R4. A shot that hits an enemy will destroy that enemy and increase player score
+* R5. The current score is visible
+* R6. If an enemy hits the ship or bottom of screen, the player loses a life
+* R7. The game ends when the player runs out of life and the final score is shown
+* R8. The player can restart after the game ends without reloading the page
+* R9. The game runs in a browser without an account or login
 
 
 
-\# Round 2 Requirements
+# Round 2 Requirements
 
 
 
-\- R1. The player controls a space ship that moves left, right, up, and down. This uses the same logic as the previous code, but with up and down added onto it.
+* R10. Changes R1: The player controls a space ship that moves left, right, up, and down. This uses the same logic as the previous code, but with up and down added onto it.
 
 
 
-\# Round 3 Requirements
+# Round 3 Requirements
 
 
 
-\- R1. There is a High Score snippet to the right of the canvas, showing the top high score ever recorded
+* R11. There is a High Score snippet to the right of the canvas, showing the top high score ever recorded
 
 
 
-\# Round 4 Requirements
+# Round 4 Requirements
 
 
 
-\- R1. A new type of enemy. A purple triangle that faces downward, moves half as slow as the red squares but moves left and right sideways
+* R12. A new type of enemy. A purple triangle that faces downward, moves half as slow as the red squares but moves left and right sideways
 
 
 
-\# Round 5 Requirements
+# Round 5 Requirements
 
 
 
-\- R1. Players can press ESC on their keyboard to pause and un-pause the game.
+* R13. Players can press ESC on their keyboard to pause and un-pause the game.
 
 
 
-\# Round 6 Requirements
+# Round 6 Requirements
 
 
 
-\- R1. Players can press shift to fire a special shotgun attack, with a cooldown of 10 seconds. The cooldown timer is shown under the high score block.
+* R14. Players can press shift to fire a special shotgun attack, with a cooldown of 10 seconds. The cooldown timer is shown under the high score block.
 

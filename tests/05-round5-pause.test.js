@@ -1,4 +1,4 @@
-// Tests for Round 5 of Shooter-Game: R1 lets the player press Esc to pause and
+// Tests for Round 5 of Shooter-Game: R13 lets the player press Esc to pause and
 // un-pause the game (see problem.md and spec.md). While paused nothing in the
 // game moves or counts down, the game is dimmed with "Paused" and
 // "Press Esc to resume", and play then continues exactly where it stopped.
@@ -35,13 +35,13 @@ const isOverlay = (c) =>
   c.args.join() === [0, 0, game.CANVAS_WIDTH, game.CANVAS_HEIGHT].join() &&
   c.fillStyle !== game.COLORS.background;
 
-// ---- R1: Esc toggles pause ---------------------------------------------------
+// ---- R13: Esc toggles pause ---------------------------------------------------
 
-test("R1: a new game is not paused", () => {
+test("R13: a new game is not paused", () => {
   assert.equal(game.createGame().isPaused, false);
 });
 
-test("R1: Esc during play pauses the game, and Esc again un-pauses it", () => {
+test("R13: Esc during play pauses the game, and Esc again un-pauses it", () => {
   const { state, input } = newGame();
   assert.equal(game.handleKeyDown(state, input, "Escape"), true, "Esc is a game key");
   assert.equal(state.isPaused, true);
@@ -49,7 +49,7 @@ test("R1: Esc during play pauses the game, and Esc again un-pauses it", () => {
   assert.equal(state.isPaused, false);
 });
 
-test("R1: holding Esc down (key repeat) does not flip the pause on and off", () => {
+test("R13: holding Esc down (key repeat) does not flip the pause on and off", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "Escape");
   game.handleKeyDown(state, input, "Escape", true);
@@ -60,9 +60,9 @@ test("R1: holding Esc down (key repeat) does not flip the pause on and off", () 
   assert.equal(state.isPaused, false, "a fresh press un-pauses");
 });
 
-// ---- R1: what stops while paused ---------------------------------------------
+// ---- R13: what stops while paused ---------------------------------------------
 
-test("R1: while paused nothing in the game moves, spawns, scores, or counts down", () => {
+test("R13: while paused nothing in the game moves, spawns, scores, or counts down", () => {
   const { state, input } = gameInPlay();
   game.handleKeyDown(state, input, "Escape");
   const frozen = structuredClone(state);
@@ -70,7 +70,7 @@ test("R1: while paused nothing in the game moves, spawns, scores, or counts down
   assert.deepEqual(state, frozen);
 });
 
-test("R1: after un-pausing, play continues exactly where it stopped", () => {
+test("R13: after un-pausing, play continues exactly where it stopped", () => {
   const paused = newGame();
   const unpaused = newGame();
   for (const { state, input } of [paused, unpaused]) {
@@ -89,7 +89,7 @@ test("R1: after un-pausing, play continues exactly where it stopped", () => {
   assert.deepEqual(paused.state, unpaused.state, "the 3 paused seconds left no trace");
 });
 
-test("R1: move and fire keys do nothing while paused", () => {
+test("R13: move and fire keys do nothing while paused", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "Escape");
   const startX = state.ship.x;
@@ -101,7 +101,7 @@ test("R1: move and fire keys do nothing while paused", () => {
   assert.equal(state.shots.length, 0);
 });
 
-test("R1: a key still held when the game un-pauses works as normal", () => {
+test("R13: a key still held when the game un-pauses works as normal", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "Escape");
   game.handleKeyDown(state, input, "ArrowLeft"); // pressed while paused, still held
@@ -111,7 +111,7 @@ test("R1: a key still held when the game un-pauses works as normal", () => {
   assert.ok(state.ship.x < startX, "the ship moves left once play resumes");
 });
 
-test("R1: a key released while paused stays released after un-pausing", () => {
+test("R13: a key released while paused stays released after un-pausing", () => {
   const { state, input } = newGame();
   game.handleKeyDown(state, input, "ArrowRight");
   game.handleKeyDown(state, input, "Escape");
@@ -122,9 +122,9 @@ test("R1: a key released while paused stays released after un-pausing", () => {
   assert.equal(state.ship.x, startX);
 });
 
-// ---- R1 with Game Over and restart (R7, R8) ----------------------------------
+// ---- R13 with Game Over and restart (R7, R8) ----------------------------------
 
-test("R1/R7: Esc does nothing on the game-over screen", () => {
+test("R13/R7: Esc does nothing on the game-over screen", () => {
   const { state, input } = newGame();
   state.lives = 0;
   state.isOver = true;
@@ -137,7 +137,7 @@ test("R1/R7: Esc does nothing on the game-over screen", () => {
   assert.ok(fake.texts().includes("Game Over"));
 });
 
-test("R1/R8: Enter while paused does not restart or un-pause", () => {
+test("R13/R8: Enter while paused does not restart or un-pause", () => {
   const { state, input } = newGame();
   state.score = 50;
   game.handleKeyDown(state, input, "Escape");
@@ -146,7 +146,7 @@ test("R1/R8: Enter while paused does not restart or un-pause", () => {
   assert.equal(state.score, 50);
 });
 
-test("R1/R8: restarting always gives a game that is not paused", () => {
+test("R13/R8: restarting always gives a game that is not paused", () => {
   const { state } = newGame();
   state.isPaused = true;
   game.resetGame(state);
@@ -154,9 +154,9 @@ test("R1/R8: restarting always gives a game that is not paused", () => {
   assert.deepEqual(state, game.createGame());
 });
 
-// ---- R1: the paused screen ---------------------------------------------------
+// ---- R13: the paused screen ---------------------------------------------------
 
-test("R1: while paused the game is dimmed and shows 'Paused' and 'Press Esc to resume'", () => {
+test("R13: while paused the game is dimmed and shows 'Paused' and 'Press Esc to resume'", () => {
   const { state, input } = gameInPlay();
   state.score = 70;
   game.handleKeyDown(state, input, "Escape");
@@ -174,7 +174,7 @@ test("R1: while paused the game is dimmed and shows 'Paused' and 'Press Esc to r
   assert.ok(hud > overlay, "score and lives are drawn on top, so they stay readable");
 });
 
-test("R1: 'Paused' and the dim layer are not shown during normal play", () => {
+test("R13: 'Paused' and the dim layer are not shown during normal play", () => {
   const fake = createFakeContext();
   game.drawGame(fake.ctx, game.createGame());
   assert.ok(!fake.texts().includes("Paused"));
@@ -182,7 +182,7 @@ test("R1: 'Paused' and the dim layer are not shown during normal play", () => {
   assert.equal(fake.calls.filter(isOverlay).length, 0);
 });
 
-// ---- R1 in the page -----------------------------------------------------------
+// ---- R13 in the page -----------------------------------------------------------
 
 // The y of the one red square drawn in the latest frame.
 function squareY(page) {
@@ -191,7 +191,7 @@ function squareY(page) {
   return rects[0].args[1];
 }
 
-test("R1/page: Esc pauses the running game, and it resumes with no jump", () => {
+test("R13/page: Esc pauses the running game, and it resumes with no jump", () => {
   const page = loadGameInFakePage({ random: () => 0.5 }); // red squares only
   page.runFor(1.5);
   const before = squareY(page);
@@ -211,7 +211,7 @@ test("R1/page: Esc pauses the running game, and it resumes with no jump", () => 
   assert.ok(!page.fake.texts().includes("Paused"));
 });
 
-test("R1/page: a held-down Esc that repeats does not un-pause", () => {
+test("R13/page: a held-down Esc that repeats does not un-pause", () => {
   const page = loadGameInFakePage({ random: () => 0.5 });
   page.frame();
   page.press("Escape");
@@ -221,14 +221,14 @@ test("R1/page: a held-down Esc that repeats does not un-pause", () => {
   assert.ok(page.fake.texts().includes("Paused"));
 });
 
-test("R1/page: the game does not pause by itself, only on Esc", () => {
+test("R13/page: the game does not pause by itself, only on Esc", () => {
   const page = loadGameInFakePage({ random: () => 0.5 });
   assert.deepEqual(Object.keys(page.listeners).sort(), ["keydown", "keyup"], "no blur or focus listeners");
   page.runFor(2);
   assert.ok(!page.fake.texts().includes("Paused"));
 });
 
-test("R1/page: the control hint under the canvas lists Esc to pause", () => {
+test("R13/page: the control hint under the canvas lists Esc to pause", () => {
   const html = readProjectFile("index.html");
   const hint = html.match(/<p class="controls">(.*)<\/p>/);
   assert.ok(hint, "control hint line exists");
