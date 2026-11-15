@@ -8,7 +8,7 @@ Read in this order: `CLAUDE.md`, `problem.md`, `spec.md`, this file, then `docs/
 
 ## Current state
 
-- **Round 6 is complete.** `problem.md` has one Round 6 requirement. **R1: "Players can press shift to fire a special shotgun attack, with a cooldown of 10 seconds. The cooldown timer is shown under the high score block."** This R1 *adds* a feature. Ship movement (Rounds 1–2), R2–R9, the High Score (Round 3), the purple triangle (Round 4), and pausing with Esc (Round 5) still hold.
+- **Round 6 is complete.** `problem.md` has one Round 6 requirement. **R14: "Players can press shift to fire a special shotgun attack, with a cooldown of 10 seconds. The cooldown timer is shown under the high score block."** This R14 *adds* a feature. Ship movement (Rounds 1–2), R2–R9, the High Score (Round 3), the purple triangle (Round 4), and pausing with Esc (Round 5) still hold.
 - `spec.md` was updated for Round 6 and committed in one commit. All of its edits applied (checked with `git diff` before the commit).
 - `node --test` passes **125 tests**: 39 in `01-initial-build`, 19 in `02-round2-move-up-down`, 15 in `03-round3-high-score`, 17 in `04-round4-triangle-enemy`, 17 in `05-round5-pause`, and 18 in `06-round6-shotgun`. Counted file by file with `node --test <file>`. Checked with Node v26.13.0. The suite was run three times in a row, because one Round 1 page test uses real randomness.
 - The server smoke check passed. `py -m http.server 8000` served `/`, `/style.css`, and `/game.js` with status 200. The served `game.js` has `fireShotgun`, and the served page has `id="shotgun-cooldown"` and "Shotgun: Shift".
