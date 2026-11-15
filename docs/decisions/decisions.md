@@ -2,6 +2,8 @@
 
 Each record says what was decided, why, and whether the user chose it or it was a judgment call. Newest records go at the bottom.
 
+# PLEASE SEE: The decision files may keep talking about R1. The requirement IDs have been since appropriately changed, so they are now referring to R10-14.
+
 ---
 
 ## D1. Tests use Node's built-in test runner
