@@ -70,6 +70,7 @@ function createGame() {
     isPaused: false, // Esc pauses and un-pauses during play
     shotTimer: 0, // time left until the ship may fire again
     shotgunTimer: 0, // time left until the shotgun may fire again (0 = ready)
+    autoShotgun: false, // Ctrl toggles: fire the shotgun by itself whenever it is ready
     spawnTimer: 0, // time since the last enemy appeared
   };
 }
@@ -92,6 +93,7 @@ function updateGame(state, input, dt, random = Math.random) {
   moveShip(state, input, dt);
   updateFiring(state, input, dt);
   updateShotgunCooldown(state, dt);
+  if (state.autoShotgun) fireShotgun(state); // fires only when the cooldown is over
   moveShots(state, dt);
   moveEnemies(state, dt);
   updateSpawning(state, dt, random); // after moving, so new enemies start at the top
@@ -155,6 +157,16 @@ function createPellet(ship, dx) {
 // "Ready", or the whole seconds left on the cooldown (10, 9, ... 1).
 function shotgunCooldownText(state) {
   return state.shotgunTimer > 0 ? String(Math.ceil(state.shotgunTimer)) : "Ready";
+}
+
+// Ctrl turns the auto shotgun on or off, only during play (not paused or over).
+function toggleAutoShotgun(state) {
+  if (!state.isOver && !state.isPaused) state.autoShotgun = !state.autoShotgun;
+}
+
+// "On" or "Off", for the Auto Shotgun panel.
+function autoShotgunText(state) {
+  return state.autoShotgun ? "On" : "Off";
 }
 
 // Normal shots go straight up; pellets also move sideways. Both are removed
@@ -308,6 +320,7 @@ const FIRE_KEYS = ["Space"];
 const RESTART_KEYS = ["Enter", "NumpadEnter"];
 const PAUSE_KEYS = ["Escape"];
 const SHOTGUN_KEYS = ["ShiftLeft", "ShiftRight"];
+const AUTO_SHOTGUN_KEYS = ["ControlLeft", "ControlRight"];
 
 // Returns true when the key belongs to the game (so the page should not scroll).
 // `repeat` is true for the extra keydowns a browser sends while a key is held.
@@ -324,6 +337,10 @@ function handleKeyDown(state, input, code, repeat = false) {
   }
   if (SHOTGUN_KEYS.includes(code)) {
     if (!repeat) fireShotgun(state); // one blast per press, never on a held key
+    return true;
+  }
+  if (AUTO_SHOTGUN_KEYS.includes(code)) {
+    if (!repeat) toggleAutoShotgun(state); // a held Ctrl does not flip it back and forth
     return true;
   }
   return setKey(input, code, true);
@@ -452,11 +469,12 @@ function startGame() {
   const ctx = canvas.getContext("2d");
   const highScoreElement = document.getElementById("high-score");
   const shotgunElement = document.getElementById("shotgun-cooldown");
+  const autoShotgunElement = document.getElementById("auto-shotgun");
   const state = createGame();
   const input = createInput();
   const highScore = createHighScore(browserStorage());
   highScoreElement.textContent = String(highScore.best);
-  showShotgunCooldown(shotgunElement, state);
+  showShotgunPanels(shotgunElement, autoShotgunElement, state);
 
   window.addEventListener("keydown", (event) => {
     if (handleKeyDown(state, input, event.code, event.repeat)) event.preventDefault();
@@ -472,16 +490,21 @@ function startGame() {
     lastTime = now;
     updateGame(state, input, dt);
     if (updateHighScore(highScore, state.score)) highScoreElement.textContent = String(highScore.best);
-    showShotgunCooldown(shotgunElement, state);
+    showShotgunPanels(shotgunElement, autoShotgunElement, state);
     drawGame(ctx, state);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 }
 
-// Update the Shotgun panel under the High Score, only when its text changes.
-function showShotgunCooldown(element, state) {
-  const text = shotgunCooldownText(state);
+// Update the Shotgun cooldown panel and the Auto Shotgun panel under it.
+function showShotgunPanels(shotgunElement, autoShotgunElement, state) {
+  showPanelText(shotgunElement, shotgunCooldownText(state));
+  showPanelText(autoShotgunElement, autoShotgunText(state));
+}
+
+// Write a side panel's text only when it changes.
+function showPanelText(element, text) {
   if (element.textContent !== text) element.textContent = text;
 }
 
@@ -496,7 +519,7 @@ if (typeof module !== "undefined") {
     TRIANGLE_CHANCE, TRIANGLE_FALL_SPEED, TRIANGLE_SIDE_SPEED, COLORS,
     SHOTGUN_COOLDOWN, SHOTGUN_PELLETS, SHOTGUN_SPREAD_SPEED,
     createGame, resetGame, createInput, updateGame, rectsOverlap, createEnemy,
-    handleKeyDown, handleKeyUp, drawGame, hudText, shotgunCooldownText,
+    handleKeyDown, handleKeyUp, drawGame, hudText, shotgunCooldownText, autoShotgunText,
     createHighScore, updateHighScore, loadHighScore, saveHighScore,
   };
 }

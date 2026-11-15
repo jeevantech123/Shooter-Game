@@ -20,7 +20,7 @@ body {
   max-width: 100%;
 }
 
-/* The High Score panel with the Shotgun cooldown panel stacked under it. */
+/* The High Score panel, with the Shotgun cooldown and Auto Shotgun panels stacked under it. */
 .side-panels {
   display: flex;
   flex-direction: column;
@@ -28,7 +28,8 @@ body {
 }
 
 .high-score,
-.shotgun {
+.shotgun,
+.auto-shotgun {
   display: flex;
   flex-direction: column;
   align-items: center;
